@@ -20,11 +20,34 @@
                 </ul>
             </div>
             <div class="grid-item" id="content-block">
-                <div>
-                    
+                <div class="content-block-item">
+                    Counter:
+                    <p id="counter">0</p>
+                    <button onclick="countUp()">
+                        Up
+                    </button>
+                    <button onclick="countDown()">
+                        Down
+                    </button>
+                </div>
+                <div class="content-block-item">
+                    <p id="lorem-text">
+                        Lorem ipsum dolor sit amet.
+                    </p>
+                    <button  id="content-button" onclick="toggleContent()">
+                        Toggle content
+                    </button>
+                </div>
+                <div class="content-block-item">
+                    Array
                 </div>
             </div>
-            <div class="grid-item" id="footer">Grid Item 4</div>
+            <div class="grid-item" id="footer">
+                Footer
+            </div>
         </div>
+
+
+        <script src="script.js"></script>
     </body>
 </html>
