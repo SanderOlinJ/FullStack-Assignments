@@ -1,5 +1,6 @@
 let count = 0;
 let content = document.getElementById("lorem-text");
+let counter = document.getElementById("counter");
 let array = [document.getElementById("li-1"),
 document.getElementById("li-2"),
 document.getElementById("li-3"),
@@ -12,7 +13,6 @@ const words = ["lorem", "ipsum", "dolor", "sit", "amet",
 "magna", "aliqua"];
 
 function updateCounter(){
-    let counter = document.getElementById("counter");
     counter.innerText = count;
 }
 
@@ -34,19 +34,18 @@ function toggleContent(){
     }
 }
 
-function chooseFourRandomWordsFromArray(){
-    let fourWord = [];
-    for (let i = 0; i < 6; i++){
+function chooseRandomWordsFromArray(){
+    let randomWords = [];
+    for (let i = 0; i < array.length; i++){
         let randomElement = words[Math.floor(Math.random() * array.length)];
-        fourWord[i] = randomElement;
+        randomWords[i] = randomElement;
     }
-    return fourWord;
+    return randomWords;
 }
 
 function fillArrayWithWords(){
-    const wordsGenerated = chooseFourRandomWordsFromArray();
+    const wordsGenerated = chooseRandomWordsFromArray();
     for (let i = 0; i < array.length; i++){
-        let word = wordsGenerated[i];
-        array[i].innerText = word;
+        array[i].innerText = wordsGenerated[i];
     }
 }
