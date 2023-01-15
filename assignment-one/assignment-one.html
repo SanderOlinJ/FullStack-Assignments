@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="style.css">
     </head>
 
-    <body>
+    <body onload="fillArrayWithWords()">
         <div id = "grid-container">
             <div class="grid-item" id="header">
                 <img src="GameCoreETSLogo2.png">
@@ -38,8 +38,15 @@
                         Toggle content
                     </button>
                 </div>
-                <div class="content-block-item">
-                    Array
+                <div class="content-block-item" id="array-div">
+                    <ul id="array">
+                        <li id="li-1"></li>
+                        <li id="li-2"></li>
+                        <li id="li-3"></li>
+                        <li id="li-4"></li>
+                        <li id="li-5"></li>
+                        <li id="li-6"></li>
+                    </ul>
                 </div>
             </div>
             <div class="grid-item" id="footer">
