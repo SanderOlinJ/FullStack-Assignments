@@ -27,11 +27,19 @@ function countDown(){
 }
 
 function toggleContent(){
-    if(content.style.opacity == '1'){
-        content.style.opacity = '0';
-    } else {
-        content.style.opacity = '1';
+    if(!is_visible(content)){
+        content.style.visibility = "visible";
     }
+    else{
+        content.style.visibility = "hidden"
+    }
+}
+
+function is_visible(text){
+    if(window.getComputedStyle(text).visibility === "hidden"){
+        return false;
+    }
+    return true;
 }
 
 function chooseRandomWordsFromArray(){
