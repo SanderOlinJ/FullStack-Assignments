@@ -130,7 +130,6 @@ button:active{
     text-align: center;
     line-height: 50px;
     transition: 0.30s;
-    cursor: pointer;
 }
 
 #footer{
