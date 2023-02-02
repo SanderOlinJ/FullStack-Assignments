@@ -1,22 +1,29 @@
 <template>
   <div id="app">
+    <Sidebar />
     <Calculator @addEquationToHistory="addEquationToArray"/>
     <div class="spacing">
 
     </div>
     <CalculatorHistory :equationHistory="equationsArray" @resetHistory="resetArray"/>
+
+    <router-view>
+      
+    </router-view>
   </div>
 </template>
 
 <script>
   import Calculator from "./components/Calculator.vue";
   import CalculatorHistory from "./components/CalculatorHistory.vue";
+  import Sidebar from "./components/Sidebar.vue";
 
   export default{
     name: "App",
     components:{
       Calculator,
-      CalculatorHistory
+      CalculatorHistory,
+      Sidebar
     },
 
     data() {
