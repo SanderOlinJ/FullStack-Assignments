@@ -199,7 +199,7 @@
 </script>
 
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 #grid-container{
     display: grid;
@@ -283,6 +283,10 @@
 #zero-button:active{
     border: 3px solid black;
     font-size: 36px;
+}
+
+button:hover{
+    opacity: 0.85;
 }
 
 </style>
