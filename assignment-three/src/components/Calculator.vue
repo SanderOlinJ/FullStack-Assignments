@@ -9,15 +9,17 @@
         </div>
         <div class="calculator-row">
             <button class="calculator-button" v-for="n in calculatorFirstRow" :key="n"
-                :class="{'pink-buttons': ['PWR','DEL','AC','÷'].includes(n)}" 
+                :class="{'pink-buttons': ['PWR','DEL','AC','÷'].includes(n)}"
+                v-bind:id="n" 
                 @click="buttonClick(n)">
                 {{ n }}
             </button>
         </div>
-        
+
         <div class="calculator-row">
             <button class="calculator-button" v-for="n in calculatorSecondRow" :key="n"
                 :class="{'green-buttons': ['7','8','9'].includes(n), 'pink-buttons': ['x'].includes(n)}"
+                v-bind:id="n" 
                 @click="buttonClick(n)">
                 {{ n }}
             </button>
@@ -26,6 +28,7 @@
         <div class="calculator-row">
             <button class="calculator-button" v-for="n in calculatorThirdRow" :key="n"
                 :class="{'green-buttons': ['4','5','6'].includes(n), 'pink-buttons': ['-'].includes(n)}"
+                v-bind:id="n" 
                 @click="buttonClick(n)">
                 {{ n }}
             </button>
@@ -34,6 +37,7 @@
         <div class="calculator-row">
             <button class="calculator-button" v-for="n in calculatorFourthRow" :key="n"
                 :class="{'green-buttons': ['1','2','3'].includes(n), 'pink-buttons': ['+'].includes(n)}"
+                v-bind:id="n" 
                 @click="buttonClick(n)">
                 {{ n }}
             </button>
@@ -48,6 +52,7 @@
             </div>
             <button class="calculator-button" v-for="n in calculatorFifthRow" :key="n"
                 :class="{'pink-buttons': ['.','='].includes(n)}"
+                v-bind:id="n" 
                 @click="buttonClick(n)">
                 {{ n }}
             </button>
@@ -99,7 +104,6 @@
                 }
             },
 
-
             numberHandling(buttonValue){
                 if(isNaN(this.updatingValue) && this.updatingValue != "."){
                     this.updatingValue = "";
@@ -138,7 +142,7 @@
                         break;
                 }
             },
-            
+
             doTheMath(buttonValue){
                 let printToEquation = true;
 
@@ -165,9 +169,9 @@
                                 break;
                         }
                     }
-                } 
+                }
                 else{
-                    if (this.updatingValue == ""){ 
+                    if (this.updatingValue == ""){
                         this.value = 0;             //If no previous operator, and input field is empty, set value to 0.
                         this.equation += 0;
                     }
@@ -182,7 +186,6 @@
                 this.lastOperator = buttonValue; // Last operator is then replaced with the latest.
                 this.updatingValue = buttonValue; // The display then shows which operator was selected.
             },
-            
 
             clearOutAllFields(){
                 this.clearAllButOutput();
@@ -199,8 +202,9 @@
 </script>
 
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
 #grid-container{
     display: grid;
     color: white;
@@ -283,6 +287,10 @@
 #zero-button:active{
     border: 3px solid black;
     font-size: 36px;
+}
+
+button:hover{
+    opacity: 0.85;
 }
 
 </style>

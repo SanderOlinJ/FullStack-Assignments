@@ -5,7 +5,7 @@
                 <h1>Calculator History</h1>
             </div>
 
-            <div class="history-div" v-for="(equation, index) in equationHistory" :key="index">
+            <div class="history-div" v-for="(equation, index) in equationHistory" :key="index" id="calculator-history">
                 <p>
                     {{ equation }}
                 </p>
@@ -23,7 +23,7 @@ export default{
     name: "Calculator History",
     props: {
         equationHistory: {
-            type: Array
+            type: Array,
         }
     },
 
@@ -31,7 +31,7 @@ export default{
 
 </script>
 
-<style>
+<style scoped>
 
 #container{
     text-align: center;
@@ -45,7 +45,7 @@ export default{
     padding: 10px;
     width: 300px;
     height: 550px;
-    background-color: rgb(239, 205, 142);
+    background-color: #32c5cf;
     text-align: center;
     overflow-x: hidden;
     overflow-y: auto;
@@ -54,6 +54,13 @@ export default{
 .history-div{
     border: 2px solid black;
     overflow-x: auto;
+    color: black;
+}
+
+p{
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
 }
 
 </style>
