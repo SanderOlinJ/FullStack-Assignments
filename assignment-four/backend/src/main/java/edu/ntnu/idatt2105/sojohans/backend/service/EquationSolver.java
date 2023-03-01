@@ -7,17 +7,34 @@ import edu.ntnu.idatt2105.sojohans.backend.model.Equation;
 @Service
 public class EquationSolver {
     
-    public static double solveEquation(Equation equation){
+    public static void solveEquation(Equation equation){
         String eqString = equation.getEquation();
         String[] split = eqString.split("(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)");
         double result = Double.parseDouble(split[0]);
-        switch (split[1]) {
-            case "+" -> result += Double.parseDouble(split[2]);
-            case "-" -> result -= Double.parseDouble(split[2]);
-            case "÷" -> result /= Double.parseDouble(split[2]);
-            case "x" -> result *= Double.parseDouble(split[2]);
-
+        for (int i = 1; i < split.length; i+=2){
+            switch (split[i]) {
+                case "+": {
+                    result += Double.parseDouble(split[i + 1]);
+                    break;
+                }
+                case "-": {
+                    result -= Double.parseDouble(split[i + 1]);
+                    break;
+                }
+                case "x": {
+                    result *= Double.parseDouble(split[i + 1]);
+                    break;
+                }
+                case "÷": {
+                    result /= Double.parseDouble(split[i + 1]);
+                    break;
+                }
+                default: {
+                    equation.setError("Could not calculate");
+                    return;
+                }
+            }
         }
-        return result;
+        equation.setSolution(result);
     }
 }

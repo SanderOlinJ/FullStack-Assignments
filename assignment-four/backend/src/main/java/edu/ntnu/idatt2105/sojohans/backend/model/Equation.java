@@ -2,7 +2,8 @@ package edu.ntnu.idatt2105.sojohans.backend.model;
 
 public class Equation {
     private final String equation;
-    private double result;
+    private double solution;
+    private String error;
 
     public Equation(String equation){
         this.equation = equation;
@@ -12,11 +13,19 @@ public class Equation {
         return equation;
     }
 
-    public void setResult(double result) {
-        this.result = result;
+    public void setSolution(double result) {
+        this.solution = result;
     }
 
-    public double getResult() {
-        return result;
+    public double getSolution() {
+        return solution;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getError() {
+        return error;
     }
 }

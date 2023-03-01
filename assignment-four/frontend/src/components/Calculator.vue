@@ -56,6 +56,8 @@
 </template>
 
 <script>
+    import { postEquation } from '../utils/httputils'
+
     export default{
         name: "Calculator",
 
@@ -78,121 +80,109 @@
         methods: {
             buttonClick(buttonValue){
                 if (buttonValue == "PWR") {
+                    this.clearOutAllFields()
                     if (this.isOff){
-                        this.clearOutAllFields();
-                        this.isOff = false;
-                        return;
+                        this.isOff = false
+                        return
                     } else{
-                        this.clearOutAllFields();
-                        this.updatingValue = "OFF";
-                        this.isOff = true;
-                        return;
+                        this.updatingValue = "OFF"
+                        this.isOff = true
+                        return
                     }
                 }
                 if (this.isOff){
-                    return;
+                    return
                 }
                 if(isNaN(buttonValue) && buttonValue != "."){
-                    this.symbolHandling(buttonValue);
+                    this.symbolHandling(buttonValue)
                 } else {
-                    this.numberHandling(buttonValue);
+                    this.numberHandling(buttonValue)
                 }
             },
 
-
             numberHandling(buttonValue){
                 if(isNaN(this.updatingValue) && this.updatingValue != "."){
-                    this.updatingValue = "";
+                    this.updatingValue = ""
                 }
                 if(!this.beginNewEquation){
-                    this.updatingValue = this.updatingValue.concat(buttonValue);
+                    this.updatingValue = this.updatingValue.concat(buttonValue)
                 } else {
-                    this.updatingValue = buttonValue;
-                    this.beginNewEquation = false;
+                    this.updatingValue = buttonValue
+                    this.beginNewEquation = false
                 }
             },
 
             symbolHandling(buttonValue){
                 switch (buttonValue){
                     case "AC":
-                        this.clearOutAllFields();
-                        break;
+                        this.clearOutAllFields()
+                        break
                     case "DEL":
                         if (!this.updatingValue == ""){
-                            this.updatingValue = this.updatingValue.slice(0, -1);
+                            this.updatingValue = this.updatingValue.slice(0, -1)
                         } else {
-                            this.clearOutAllFields();
+                            this.clearOutAllFields()
                         }
-                        break;
+                        break
                     case "=":
-                        this.doTheMath(buttonValue);
-                        this.updatingValue = this.value.toString();
-                        this.equation = this.equation.concat(this.value);
-                        this.$emit("addEquationToHistory", this.equation);
-                        console.log(this.equation);
-                        this.clearAllButOutput();
-                        this.beginNewEquation = true;
-                        break;
+                        this.buildEquation(buttonValue)
+                        this.RestAPI()
+                        this.updatingValue = this.value.toString()
+                        this.equation = this.equation.concat("=")
+                        this.equation = this.equation.concat(this.value)
+                        this.$emit("addEquationToHistory", this.equation)
+                        console.log(this.equation)
+                        this.clearAllButOutput()
+                        this.beginNewEquation = true
+                        break
                     default:
-                        this.doTheMath(buttonValue);
-                        break;
+                        this.buildEquation(buttonValue)
+                        break
                 }
             },
             
-            doTheMath(buttonValue){
-                let printToEquation = true;
-
-                // Calculates the sum so far, using the previous operator entered (if it has one).
-                if(this.lastOperator != ""){
-                    //If the user were given 2 operators in a row, remove the earlier instance.
-                    if(isNaN(this.updatingValue)){
-                        this.equation = this.equation.substring(0, this.equation.length-1);
-                        printToEquation = false;
-                    } else {
-                        // Calculates the sum, based on operator.
-                        switch(this.lastOperator){
-                            case "+":
-                                this.value += parseFloat(this.updatingValue);
-                                break;
-                            case "-":
-                                this.value -= parseFloat(this.updatingValue);
-                                break;
-                            case "x":
-                                this.value *= parseFloat(this.updatingValue);
-                                break;
-                            case "÷":
-                                this.value /= parseFloat(this.updatingValue);
-                                break;
+            RestAPI(){
+                postEquation(this.equation).then(
+                    (response) => {
+                        let result = response.data
+                        if (result.error == ""){
+                            result = parseFloat(result.solution)
+                            if(!Number.isInteger(result)){
+                                result = result.toFixed(4)
+                            }
+                            console.log(result.equation)
+                            console.log(result.solution)
+                            this.value = result
+                        } else {
+                            alert(result.error)
                         }
                     }
-                } 
-                else{
-                    if (this.updatingValue == ""){ 
-                        this.value = 0;             //If no previous operator, and input field is empty, set value to 0.
-                        this.equation += 0;
-                    }
-                    else{
-                        this.value = parseFloat(this.updatingValue); //If no previous operator, then set start value to input.
-                    }
+                ).catch((error) => {
+                    console.log(error.response)
+                })
+            },
+
+            buildEquation(buttonValue){
+                if (this.lastOperator != "" && isNaN(this.updatingValue)){
+                    this.equation = this.equation.substring(0, this.equation.length-1)
+                } else{
+                    this.equation += this.updatingValue
                 }
-                if (printToEquation){
-                    this.equation += this.updatingValue; // If there was no operators typed in sequence, then the last number is added to the equation.
+                if (buttonValue != "="){
+                    this.equation += buttonValue
+                    this.updatingValue = buttonValue
                 }
-                this.equation += buttonValue; //Equation is then given the operator.
-                this.lastOperator = buttonValue; // Last operator is then replaced with the latest.
-                this.updatingValue = buttonValue; // The display then shows which operator was selected.
             },
             
-
             clearOutAllFields(){
-                this.clearAllButOutput();
-                this.updatingValue = "";
+                this.clearAllButOutput()
+                this.updatingValue = ""
             },
 
             clearAllButOutput(){
                 this.value = 0;
-                this.lastOperator = "";
-                this.equation = "";
+                this.lastOperator = ""
+                this.equation = ""
             }
         }
     }
