@@ -127,13 +127,6 @@
                     case "=":
                         this.buildEquation(buttonValue)
                         this.RestAPI()
-                        this.updatingValue = this.value.toString()
-                        this.equation = this.equation.concat("=")
-                        this.equation = this.equation.concat(this.value)
-                        this.$emit("addEquationToHistory", this.equation)
-                        console.log(this.equation)
-                        this.clearAllButOutput()
-                        this.beginNewEquation = true
                         break
                     default:
                         this.buildEquation(buttonValue)
@@ -148,15 +141,21 @@
                         if (result.error == ""){
                             result = parseFloat(result.solution)
                             if(!Number.isInteger(result)){
-                                result = result.toFixed(4)
+                                result = parseFloat(result.toFixed(4))
                             }
                             this.value = result
+                            this.updatingValue = this.value.toString()
+                            this.equation = this.equation.concat("=")
+                            this.equation = this.equation.concat(this.value)
+                            this.$emit("addEquationToHistory", this.equation)
+                            this.clearAllButOutput()
+                            this.beginNewEquation = true
                         } else {
                             alert(result.error)
                         }
                     }
                 ).catch((error) => {
-                    console.log(error.response)
+                    alert(error.response)
                 })
             },
 
