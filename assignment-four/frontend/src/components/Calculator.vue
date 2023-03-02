@@ -56,7 +56,7 @@
 </template>
 
 <script>
-    import { postEquation } from '../utils/httputils'
+    import { postEquation } from "../utils/restapi"
 
     export default{
         name: "Calculator",
