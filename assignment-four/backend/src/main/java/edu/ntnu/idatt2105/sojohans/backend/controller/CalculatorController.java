@@ -6,7 +6,7 @@ import edu.ntnu.idatt2105.sojohans.backend.model.Equation;
 import edu.ntnu.idatt2105.sojohans.backend.service.EquationSolver;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping("/api")
 public class CalculatorController {
     
@@ -16,7 +16,7 @@ public class CalculatorController {
     }
 
     @PostMapping("/calculate")
-    public Equation postEquation(@RequestParam Equation equation){
+    public Equation postEquation(@RequestBody Equation equation){
         EquationSolver.solveEquation(equation);
         return equation;
     }

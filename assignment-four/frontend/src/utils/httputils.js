@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const restAPICalc = axios.create({
-    baseURL: "http://localhost:8088",
+    baseURL: "http://localhost:8088/api",
     withCredentials: false,
     headers: {
         "Content-Type": "application/json"
@@ -9,5 +9,5 @@ const restAPICalc = axios.create({
 })
 
 export const postEquation = (equation) => {
-    return restAPICalc.post("/api/calculate", equation)
+    return restAPICalc.post("/calculate", equation)
 }

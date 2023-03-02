@@ -9,7 +9,7 @@ public class EquationSolver {
     
     public static void solveEquation(Equation equation){
         String eqString = equation.getEquation();
-        String[] split = eqString.split("(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)");
+        String[] split = eqString.split("(?<=\\d)(?=[+\\-x÷])|(?<=[+\\-x÷])(?=\\d)");
         double result = Double.parseDouble(split[0]);
         for (int i = 1; i < split.length; i+=2){
             switch (split[i]) {
@@ -35,6 +35,7 @@ public class EquationSolver {
                 }
             }
         }
+        equation.setError("");
         equation.setSolution(result);
     }
 }

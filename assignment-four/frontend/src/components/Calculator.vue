@@ -150,8 +150,6 @@
                             if(!Number.isInteger(result)){
                                 result = result.toFixed(4)
                             }
-                            console.log(result.equation)
-                            console.log(result.solution)
                             this.value = result
                         } else {
                             alert(result.error)
