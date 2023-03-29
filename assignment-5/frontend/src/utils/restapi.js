@@ -10,3 +10,4 @@ const restAPICalc = axios.create({
 export const postEquation = (equation) => {
     return restAPICalc.post("/calculate", equation)
 }
+

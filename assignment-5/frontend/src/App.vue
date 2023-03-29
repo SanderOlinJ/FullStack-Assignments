@@ -1,39 +1,13 @@
 <template>
   <div id="app">
-    <Calculator @addEquationToHistory="addEquationToArray"/>
-    <div class="spacing">
-
-    </div>
-    <CalculatorHistory :equationHistory="equationsArray" @resetHistory="resetArray"/>
+    <NavBar />
+    <RouterView />
   </div>
 </template>
 
-<script>
-  import Calculator from "./components/Calculator.vue";
-  import CalculatorHistory from "./components/CalculatorHistory.vue";
+<script setup>
+import NavBar from './components/NavBar.vue';
 
-  export default{
-    name: "App",
-    components:{
-      Calculator,
-      CalculatorHistory
-    },
-
-    data() {
-      return{
-        equationsArray: []
-      }
-    },
-    
-    methods:{
-      addEquationToArray(equation){
-        this.equationsArray.push(equation);
-      },
-      resetArray(){
-        this.equationsArray = [];
-      }
-    }
-  }
 </script>
 
 <style>
@@ -48,10 +22,6 @@ body{
     display: grid;
     height: inherit;
     justify-content: center;
-}
-#app{
-  display: flex;
-  
 }
 
 .spacing{
