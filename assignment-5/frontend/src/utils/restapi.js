@@ -11,3 +11,7 @@ export const postEquation = (equation) => {
     return restAPICalc.post("/calculate", equation)
 }
 
+export const postUser = (user) =>{
+    return restAPICalc.post("/signup", user)
+}
+

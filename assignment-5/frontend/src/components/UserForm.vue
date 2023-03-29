@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="login" class="form-container">
+    <form class="form-container">
         <label class="error">{{ error }}</label>
         <div class="username">
             <h3>Username</h3>
@@ -9,27 +9,45 @@
             <h3>Password</h3>
             <input v-model="password" />
         </div>
-        <button @click="login" >{{ props.buttonText }}</button>
+        <button v-if="props.isLogin" @click="login"> Login </button>
+        <button v-if="!props.isLogin" @click="signup" >Sign up</button>
     </form>
 </template>
 
 <script setup>
 import { ref, defineProps } from 'vue'
 import router from '@/router';
+import { postUser } from '@/utils/restapi';
 
 const username = ref('')
 const password = ref('')
 const error = ref('')
 
 const props = defineProps({
-    buttonText: {
-        type: String,
+    isLogin: {
+        type: Boolean,
         required: true
     }
 })
 
 function login() {
     router.push('/calculator')
+}
+
+function signup() {
+    const user = {
+        username: username.value,
+        password: password.value
+    }
+    postUser(user).then(
+        (response) => {
+            if (response === 200) {
+                console.log(response.data)
+            }
+        }
+    ).catch((error) => {
+        console.log(error.response)
+    })
 }
 
 </script>
