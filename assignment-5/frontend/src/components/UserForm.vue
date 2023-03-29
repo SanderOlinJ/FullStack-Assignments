@@ -1,5 +1,5 @@
 <template>
-    <form class="form-container">
+    <div class="form-container">
         <label class="error">{{ error }}</label>
         <div class="username">
             <h3>Username</h3>
@@ -11,7 +11,7 @@
         </div>
         <button v-if="props.isLogin" @click="login"> Login </button>
         <button v-if="!props.isLogin" @click="signup" >Sign up</button>
-    </form>
+    </div>
 </template>
 
 <script setup>
@@ -34,19 +34,23 @@ function login() {
     router.push('/calculator')
 }
 
-function signup() {
+async function signup() {
     const user = {
         username: username.value,
         password: password.value
     }
-    postUser(user).then(
+    
+    await postUser(user).then(
         (response) => {
-            if (response === 200) {
+            if (response.status === 200) {
+                console.log('User registered')
                 console.log(response.data)
             }
         }
     ).catch((error) => {
-        console.log(error.response)
+        if (error.response.status === 409){
+            console.log('User already registered')
+        }
     })
 }
 

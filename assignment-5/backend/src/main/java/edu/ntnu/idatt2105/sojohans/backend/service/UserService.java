@@ -1,11 +1,15 @@
 package edu.ntnu.idatt2105.sojohans.backend.service;
 
 import edu.ntnu.idatt2105.sojohans.backend.model.User;
+import edu.ntnu.idatt2105.sojohans.backend.model.UserRequest;
 import edu.ntnu.idatt2105.sojohans.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -13,10 +17,18 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User addUser(String username, String password){
+    public ResponseEntity<String> addUser(UserRequest userRequest){
+        Optional<User> existingUser = userRepository.findById(userRequest.getUsername());
+        if (existingUser.isPresent()){
+            String response = "User with this username exists!";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        return userRepository.save(user);
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(userRequest.getPassword());
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Successfully created account");
     }
 }
