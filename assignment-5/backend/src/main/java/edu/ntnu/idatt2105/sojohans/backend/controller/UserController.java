@@ -21,7 +21,13 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> addUser(@RequestBody UserRequest userRequest){
-        logger.info("User request received: " + userRequest.getUsername() + " | " + userRequest.getPassword());
+        logger.info("User signup request received: " + userRequest.getUsername() + " | " + userRequest.getPassword());
         return userService.addUser(userRequest);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserRequest userRequest){
+        logger.info("User login request received: " + userRequest.getUsername() + " | " + userRequest.getPassword());
+        return userService.login(userRequest);
     }
 }

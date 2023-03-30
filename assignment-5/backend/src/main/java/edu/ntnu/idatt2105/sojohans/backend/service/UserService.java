@@ -31,4 +31,15 @@ public class UserService {
 
         return ResponseEntity.ok("Successfully created account");
     }
+
+    public ResponseEntity<String> login(UserRequest userRequest){
+        Optional<User> existingUser = userRepository.findById(userRequest.getUsername());
+        if (existingUser.isEmpty() || !existingUser.get().getPassword().equals(userRequest.getPassword())){
+            String response = "Username or password is incorrect.";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
+        return ResponseEntity.ok(("Login successful"));
+
+    }
 }

@@ -9,7 +9,7 @@
             <h3>Password</h3>
             <input v-model="password" />
         </div>
-        <button v-if="props.isLogin" @click="login"> Login </button>
+        <button v-if="props.isLogin" @click="login">Login</button>
         <button v-if="!props.isLogin" @click="signup" >Sign up</button>
     </div>
 </template>
@@ -17,7 +17,7 @@
 <script setup>
 import { ref, defineProps } from 'vue'
 import router from '@/router';
-import { postUser } from '@/utils/restapi';
+import { postUser, postLogin } from '@/utils/restapi';
 
 const username = ref('')
 const password = ref('')
@@ -30,8 +30,22 @@ const props = defineProps({
     }
 })
 
-function login() {
-    router.push('/calculator')
+async function login() {
+    const user = {
+        username: username.value,
+        password: password.value
+    }
+    await postLogin(user).then(
+        (response) => {
+            if (response.status === 200) {
+                console.log('Logged in')
+                console.log(response.data)
+                router.push('/calculator')
+            }
+        }
+    ).catch((error) => {
+        console.log(error.response)
+    })
 }
 
 async function signup() {
@@ -39,12 +53,12 @@ async function signup() {
         username: username.value,
         password: password.value
     }
-    
     await postUser(user).then(
         (response) => {
             if (response.status === 200) {
                 console.log('User registered')
                 console.log(response.data)
+                router.push('/')
             }
         }
     ).catch((error) => {
