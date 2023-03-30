@@ -135,14 +135,18 @@ async function RestAPI(){
   await postEquation(equation.value).then(
     (response) => {
       const result = ref(response.data)
+      const emitEq = ref('')
       result.value = parseFloat(result.value.solution)
       if (!Number.isInteger(result.value)){
         result.value = parseFloat(result.value.toFixed(4))
       }
       value.value = result.value
       updatingValue.value = value.value.toString()
+      emitEq.value = equation.value.concat('=')
+      emitEq.value = emitEq.value.concat(value.value)
       solution.value = value.value
       beginNewEquation.value = true
+      emits('addEquationToHistory', emitEq.value)
     }
   ).catch((error) => {
     alert(error.response)
@@ -152,9 +156,7 @@ async function RestAPI(){
     equation: equation.value,
     solution: solution.value
   })
-  console.log(equation.value)
   await postEquationWithUser(request.value)
-  emits('addEquationToHistory', equation.value + "=" + solution.value)
   clearAllButOutput()
 }
 

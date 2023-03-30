@@ -5,6 +5,7 @@ import edu.ntnu.idatt2105.sojohans.backend.model.User;
 import edu.ntnu.idatt2105.sojohans.backend.model.UserRequest;
 import edu.ntnu.idatt2105.sojohans.backend.repository.EquationRepository;
 import edu.ntnu.idatt2105.sojohans.backend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,26 +49,42 @@ public class UserService {
         return ResponseEntity.ok(("Login successful"));
     }
 
-    public List<Equation> addEquation(Equation equation, String username){
+    public boolean addEquation(Equation equation, String username){
         Optional<User> existingUser = userRepository.findById(username);
         if (existingUser.isPresent()){
             User user = existingUser.get();
             equation.setUser(user);
             equationRepository.save(equation);
-            return getEquationsByUser(user);
+            return true;
+        }
+        return false;
+    }
+
+    public List<Equation> getEquationsByUser(String username){
+        Optional<User> existingUser = userRepository.findById(username);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            List<Equation> equationsByUser = new ArrayList<>();
+            List<Equation> allEquations = equationRepository.findAll();
+
+            for (Equation equation : allEquations) {
+                if (equation.getUser().equals(user)) {
+                    equationsByUser.add(equation);
+                }
+            }
+            return equationsByUser;
         }
         return null;
     }
 
-    private List<Equation> getEquationsByUser(User user){
-        List<Equation> equationsByUser = new ArrayList<>();
-        List<Equation> allEquations = equationRepository.findAll();
-
-        for (Equation equation : allEquations){
-            if (equation.getUser().equals(user)){
-                equationsByUser.add(equation);
-            }
+    @Transactional
+    public boolean clearEquationsByUser(String username){
+        Optional<User> existingUser = userRepository.findById(username);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            equationRepository.deleteByUserUsername(user.getUsername());
+            return true;
         }
-        return equationsByUser;
+        return false;
     }
 }

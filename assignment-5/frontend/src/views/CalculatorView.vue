@@ -2,30 +2,20 @@
     <div class="calc">    
         <Calculator @addEquationToHistory="addEquationToArray"/>
         <div class="spacing"></div>
-        <CalculatorHistory :equationHistory="equationsArray" @resetHistory="resetArray"/>
+        <CalculatorHistory :equation="currentEquation"/>
     </div>
 </template>
   
 <script setup>
 import Calculator from '../components/Calculator.vue';
 import CalculatorHistory from '../components/CalculatorHistory.vue';
-import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/store';
+import { ref } from 'vue'
     
-const userStore = useUserStore()
-const equationsArray =  ref([])
+const currentEquation =  ref('')
 
 function addEquationToArray(equation) {
-    equationsArray.value.push(equation);
+  currentEquation.value = equation
 }
-
-function resetArray() {
-    equationsArray.value = [];
-}
-
-onMounted(() => {
-  console.log(userStore.username)
-})
 
 </script>
 

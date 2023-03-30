@@ -35,8 +35,20 @@ public class UserController {
     }
 
     @PostMapping("/addEquation/{username}")
-    public List<Equation> postEquationWithUser(@RequestBody Equation equation, @PathVariable String username){
+    public boolean postEquationWithUser(@RequestBody Equation equation, @PathVariable String username){
         logger.info("Equation received: " + equation.getEquation() + " from user: " + username);
         return userService.addEquation(equation, username);
+    }
+
+    @GetMapping("/getEquations/{username}")
+    public List<Equation> getEquationFromUser(@PathVariable String username){
+        logger.info("Received request for all equations by user: " + username);
+        return userService.getEquationsByUser(username);
+    }
+
+    @PostMapping("/clearEquations/{username}")
+    public boolean clearEquations(@PathVariable String username){
+        logger.info("Received request to clear all equations by user: " + username);
+        return userService.clearEquationsByUser(username);
     }
 }

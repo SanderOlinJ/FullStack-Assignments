@@ -5,28 +5,63 @@
                 <h1>Calculator History</h1>
             </div>
 
-            <div class="history-div" v-for="(equation, index) in equationHistory" :key="index">
+            <div class="history-div" v-for="(equation, index) in equationsHistory" :key="index">
                 <p>
                     {{ equation }}
                 </p>
             </div>
         </div>
-        <button id="clear-button" @click="$emit('resetHistory')">
+        <button id="clear-button" @click="resetHistory">
             Clear History
         </button>
     </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted, ref, defineProps, watch } from 'vue';
+import { getEquationByUser, clearEquationsByUser } from '@/utils/restapi';
+import { useUserStore } from '@/store';
 
-export default{
-    name: "Calculator History",
-    props: {
-        equationHistory: {
-            type: Array
-        }
-    },
+const userStore = useUserStore()
+const equationsHistory = ref([])
 
+const props = defineProps({
+  equation: {
+    type: String,
+    required: true
+  }
+}) 
+
+watch(() => props.equation, (newValue) => {
+  if (props.equation !== ''){
+    equationsHistory.value.push(newValue)
+  }
+})
+
+onMounted(() => {
+  getHistory()
+})
+
+function getHistory() {
+  getEquationByUser(userStore.username).then(
+    (response) => {
+      for (let i = 0; i < response.data.length; i++){
+        equationsHistory.value.push(response.data[i].equation + " = " + response.data[i].solution)
+      }
+    }
+  ).catch((error) => {
+    alert(error)
+  })
+}
+
+function resetHistory() {
+  clearEquationsByUser(userStore.username).then(
+    () => {
+      equationsHistory.value = []
+    }
+  ).catch((error) => {
+    alert(error.response)
+  })
 }
 
 </script>

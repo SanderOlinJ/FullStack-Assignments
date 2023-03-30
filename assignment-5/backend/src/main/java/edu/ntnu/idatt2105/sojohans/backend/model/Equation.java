@@ -20,7 +20,7 @@ public class Equation {
     @Column(name = "equation") private String equation;
     @Column(name = "solution") private double solution;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade =  CascadeType.PERSIST)
     @JoinColumn(name = "user_username")
     private User user;
 

@@ -19,6 +19,14 @@ export const postEquationWithUser = (request) => {
   return restAPICalc.post('/addEquation/' + request.username, equation)
 }
 
+export const clearEquationsByUser = (username) => {
+  return restAPICalc.post('/clearEquations/' + username)
+}
+
+export const getEquationByUser = (username) => {
+  return restAPICalc.get('/getEquations/' + username)
+}
+
 export const postUser = (user) => {
     return restAPICalc.post('/signup', user)
 }

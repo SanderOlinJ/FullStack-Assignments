@@ -34,9 +34,9 @@ watch(() => userStore.loggedIn, (newValue) => {
   }
 })
 
-async function logOut() {
+function logOut() {
   showLogin.value = true
-  await userStore.logOut()
+  userStore.logOut()
   router.push('/')
 }
 
