@@ -7,7 +7,7 @@ import edu.ntnu.idatt2105.sojohans.backend.model.Equation;
 @Service
 public class EquationSolver {
     
-    public static void solveEquation(Equation equation, String username){
+    public static void solveEquation(Equation equation){
         String eqString = equation.getEquation();
         String[] split = eqString.split("(?<=\\d)(?=[+\\-x÷])|(?<=[+\\-x÷])(?=\\d)");
         double result = Double.parseDouble(split[0]);
@@ -29,13 +29,8 @@ public class EquationSolver {
                     result /= Double.parseDouble(split[i + 1]);
                     break;
                 }
-                default: {
-                    equation.setError("Could not calculate");
-                    return;
-                }
             }
         }
-        equation.setError("");
         equation.setSolution(result);
     }
 }

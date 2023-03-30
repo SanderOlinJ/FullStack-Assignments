@@ -14,10 +14,10 @@ public class CalculatorController {
 
     private Logger logger = LoggerFactory.getLogger(CalculatorController.class);
 
-    @PostMapping("/calculate/{username}")
-    public Equation postEquation(@RequestBody Equation equation, @PathVariable String username){
-        logger.info("Equation received: " + equation.getEquation() + "from user: " + username);
-        EquationSolver.solveEquation(equation, username);
+    @PostMapping("/calculate")
+    public Equation postEquation(@RequestBody Equation equation){
+        logger.info("Equation received: " + equation.getEquation());
+        EquationSolver.solveEquation(equation);
         logger.info("Solution of equation (" + equation.getEquation() + "): " + equation.getSolution());
         return equation;
     }

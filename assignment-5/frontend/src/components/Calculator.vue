@@ -57,13 +57,14 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue'
-import { postEquation } from '../utils/restapi'
+import { postEquation, postEquationWithUser } from '../utils/restapi'
 import { useUserStore } from '@/store';
 
 const updatingValue = ref('OFF')
 const value = ref(0.0)
 const lastOperator = ref('')
 const equation = ref('')
+const solution = ref('')
 const isOff = ref(true)
 const beginNewEquation = ref(false)
 const calculatorFirstRow = ref(['PWR','DEL', 'AC', '÷'])
@@ -130,56 +131,55 @@ function symbolHandling(buttonValue) {
   }
 }
 
-function RestAPI(){
+async function RestAPI(){
+  await postEquation(equation.value).then(
+    (response) => {
+      const result = ref(response.data)
+      result.value = parseFloat(result.value.solution)
+      if (!Number.isInteger(result.value)){
+        result.value = parseFloat(result.value.toFixed(4))
+      }
+      value.value = result.value
+      updatingValue.value = value.value.toString()
+      solution.value = value.value
+      beginNewEquation.value = true
+    }
+  ).catch((error) => {
+    alert(error.response)
+  })
   const request = ref({
     username: userStore.username,
-    equation: equation.value
+    equation: equation.value,
+    solution: solution.value
   })
-  postEquation(request.value).then(
-      (response) => {
-          const result = ref(response.data)
-          if (result.value.error == ""){
-              result.value = parseFloat(result.value.solution)
-              if(!Number.isInteger(result)){
-                  result.value = parseFloat(result.value.toFixed(4))
-              }
-              value.value = result.value
-              updatingValue.value = value.value.toString()
-              equation.value = equation.value.concat("=")
-              equation.value = equation.value.concat(value.value)
-              emits('addEquationToHistory', equation.value)
-              clearAllButOutput()
-              beginNewEquation.value = true
-          } else {
-              alert(result.value.error)
-          }
-      }
-  ).catch((error) => {
-      alert(error.response)
-  })
+  console.log(equation.value)
+  await postEquationWithUser(request.value)
+  emits('addEquationToHistory', equation.value + "=" + solution.value)
+  clearAllButOutput()
 }
 
 function buildEquation(buttonValue){
-    if (lastOperator.value !== '' && isNaN(updatingValue.value)){
-        equation.value = equation.value.substring(0, equation.value.length-1)
-    } else{
-        equation.value += updatingValue.value
-    }
-    if (buttonValue !== '='){
-        equation.value += buttonValue
-        updatingValue.value = buttonValue
-    }
+  if (lastOperator.value !== '' && isNaN(updatingValue.value)){
+    equation.value = equation.value.substring(0, equation.value.length-1)
+  } else{
+    equation.value += updatingValue.value
+  }
+  if (buttonValue !== '='){
+    equation.value += buttonValue
+    updatingValue.value = buttonValue
+  }
 }
 
 function clearOutAllFields(){
-    clearAllButOutput()
-    updatingValue.value = ''
+  clearAllButOutput()
+  updatingValue.value = ''
 }
 
 function clearAllButOutput(){
-    value.value = 0;
-    lastOperator.value = ''
-    equation.value = ''
+  value.value = 0;
+  lastOperator.value = ''
+  equation.value = ''
+  solution.value = ''
 }
 </script>
 
