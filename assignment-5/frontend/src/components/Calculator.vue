@@ -55,134 +55,134 @@
     </div>
 </template>
 
-<script>
-    import { postEquation } from "../utils/restapi"
+<script setup>
+import { ref, defineEmits } from 'vue'
+import { postEquation } from '../utils/restapi'
+//import { useUserStore } from '@/store';
 
-    export default{
-        name: "Calculator",
+const updatingValue = ref('OFF')
+const value = ref(0.0)
+const lastOperator = ref('')
+const equation = ref('')
+const isOff = ref(true)
+const beginNewEquation = ref(false)
+const calculatorFirstRow = ref(['PWR','DEL', 'AC', '÷'])
+const calculatorSecondRow = ref(['7', '8', '9', 'x'])
+const calculatorThirdRow = ref(['4', '5', '6', '-'])
+const calculatorFourthRow = ref(['1', '2', '3', '+'])
+const calculatorFifthRow = ref(['.', '='])
+const emits = defineEmits(['addEquationToHistory'])
+//const userStore = useUserStore()
 
-        data() {
-            return {
-                updatingValue: "OFF",
-                value: 0.0,
-                lastOperator: "",
-                equation: "",
-                isOff: true,
-                beginNewEquation: false,
-                calculatorFirstRow: ["PWR","DEL", "AC", "÷"],
-                calculatorSecondRow: ["7", "8", "9", "x"],
-                calculatorThirdRow: ["4", "5", "6", "-"],
-                calculatorFourthRow: ["1", "2", "3", "+"],
-                calculatorFifthRow: [".", "="]
-            }
-        },
-
-        methods: {
-            buttonClick(buttonValue){
-                if (buttonValue == "PWR") {
-                    this.clearOutAllFields()
-                    if (this.isOff){
-                        this.isOff = false
-                        return
-                    } else{
-                        this.updatingValue = "OFF"
-                        this.isOff = true
-                        return
-                    }
-                }
-                if (this.isOff){
-                    return
-                }
-                if(isNaN(buttonValue) && buttonValue != "."){
-                    this.symbolHandling(buttonValue)
-                } else {
-                    this.numberHandling(buttonValue)
-                }
-            },
-
-            numberHandling(buttonValue){
-                if(isNaN(this.updatingValue) && this.updatingValue != "."){
-                    this.updatingValue = ""
-                }
-                if(!this.beginNewEquation){
-                    this.updatingValue = this.updatingValue.concat(buttonValue)
-                } else {
-                    this.updatingValue = buttonValue
-                    this.beginNewEquation = false
-                }
-            },
-
-            symbolHandling(buttonValue){
-                switch (buttonValue){
-                    case "AC":
-                        this.clearOutAllFields()
-                        break
-                    case "DEL":
-                        if (!this.updatingValue == ""){
-                            this.updatingValue = this.updatingValue.slice(0, -1)
-                        } else {
-                            this.clearOutAllFields()
-                        }
-                        break
-                    case "=":
-                        this.buildEquation(buttonValue)
-                        this.RestAPI()
-                        break
-                    default:
-                        this.buildEquation(buttonValue)
-                        break
-                }
-            },
-            
-            RestAPI(){
-                postEquation(this.equation).then(
-                    (response) => {
-                        let result = response.data
-                        if (result.error == ""){
-                            result = parseFloat(result.solution)
-                            if(!Number.isInteger(result)){
-                                result = parseFloat(result.toFixed(4))
-                            }
-                            this.value = result
-                            this.updatingValue = this.value.toString()
-                            this.equation = this.equation.concat("=")
-                            this.equation = this.equation.concat(this.value)
-                            this.$emit("addEquationToHistory", this.equation)
-                            this.clearAllButOutput()
-                            this.beginNewEquation = true
-                        } else {
-                            alert(result.error)
-                        }
-                    }
-                ).catch((error) => {
-                    alert(error.response)
-                })
-            },
-
-            buildEquation(buttonValue){
-                if (this.lastOperator != "" && isNaN(this.updatingValue)){
-                    this.equation = this.equation.substring(0, this.equation.length-1)
-                } else{
-                    this.equation += this.updatingValue
-                }
-                if (buttonValue != "="){
-                    this.equation += buttonValue
-                    this.updatingValue = buttonValue
-                }
-            },
-            
-            clearOutAllFields(){
-                this.clearAllButOutput()
-                this.updatingValue = ""
-            },
-
-            clearAllButOutput(){
-                this.value = 0;
-                this.lastOperator = ""
-                this.equation = ""
-            }
-        }
+function buttonClick(buttonValue){
+  if (buttonValue == 'PWR') {
+    clearOutAllFields()
+    if (isOff.value) {
+      isOff.value = false
+      return
+    } else {
+      updatingValue.value = 'OFF'
+      isOff.value = true
+      return
     }
+  }
+  if (isOff.value){
+    return
+  }
+  if (isNaN(buttonValue) && buttonValue !== '.') {
+    symbolHandling(buttonValue)
+  } else {
+    numberHandling(buttonValue)
+  }
+}
+
+function numberHandling(buttonValue){
+  if (isNaN(updatingValue.value) && updatingValue.value !== '.') {
+    updatingValue.value = ''
+  }
+  if (!beginNewEquation.value) {
+    updatingValue.value = updatingValue.value.concat(buttonValue)
+  } else {
+    updatingValue.value = buttonValue
+    beginNewEquation.value = false
+  }
+}
+
+function symbolHandling(buttonValue) {
+  switch (buttonValue){
+    case 'AC':
+      clearOutAllFields()
+      break
+    case 'DEL':
+      if (!updatingValue.value == ''){
+        updatingValue.value = updatingValue.value.slice(0, -1)
+      } else {
+        clearOutAllFields()
+      }
+      break
+    case '=':
+      buildEquation(buttonValue)
+      RestAPI()
+      break
+    default:
+      buildEquation(buttonValue)
+      break
+  }
+}
+
+function RestAPI(){
+  /*
+  const request = ref({
+    equation: equation.value,
+    username: userStore.username
+  })
+  */
+  postEquation(equation.value).then(
+      (response) => {
+          const result = ref(response.data)
+          if (result.value.error == ""){
+              result.value = parseFloat(result.value.solution)
+              if(!Number.isInteger(result)){
+                  result.value = parseFloat(result.value.toFixed(4))
+              }
+              value.value = result.value
+              updatingValue.value = value.value.toString()
+              equation.value = equation.value.concat("=")
+              equation.value = equation.value.concat(value.value)
+              emits('addEquationToHistory', equation.value)
+              clearAllButOutput()
+              beginNewEquation.value = true
+          } else {
+              alert(result.value.error)
+          }
+      }
+  ).catch((error) => {
+      alert(error.response)
+  })
+}
+
+function buildEquation(buttonValue){
+    if (lastOperator.value !== '' && isNaN(updatingValue.value)){
+        equation.value = equation.value.substring(0, equation.value.length-1)
+    } else{
+        equation.value += updatingValue.value
+    }
+    if (buttonValue !== '='){
+        equation.value += buttonValue
+        updatingValue.value = buttonValue
+    }
+}
+
+function clearOutAllFields(){
+    clearAllButOutput()
+    updatingValue.value = ''
+}
+
+function clearAllButOutput(){
+    value.value = 0;
+    lastOperator.value = ''
+    equation.value = ''
+}
 </script>
 
 
