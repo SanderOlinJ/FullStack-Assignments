@@ -58,7 +58,7 @@
 <script setup>
 import { ref, defineEmits } from 'vue'
 import { postEquation } from '../utils/restapi'
-//import { useUserStore } from '@/store';
+import { useUserStore } from '@/store';
 
 const updatingValue = ref('OFF')
 const value = ref(0.0)
@@ -72,7 +72,7 @@ const calculatorThirdRow = ref(['4', '5', '6', '-'])
 const calculatorFourthRow = ref(['1', '2', '3', '+'])
 const calculatorFifthRow = ref(['.', '='])
 const emits = defineEmits(['addEquationToHistory'])
-//const userStore = useUserStore()
+const userStore = useUserStore()
 
 function buttonClick(buttonValue){
   if (buttonValue == 'PWR') {
@@ -131,13 +131,11 @@ function symbolHandling(buttonValue) {
 }
 
 function RestAPI(){
-  /*
   const request = ref({
-    equation: equation.value,
-    username: userStore.username
+    username: userStore.username,
+    equation: equation.value
   })
-  */
-  postEquation(equation.value).then(
+  postEquation(request.value).then(
       (response) => {
           const result = ref(response.data)
           if (result.value.error == ""){

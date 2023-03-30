@@ -7,7 +7,7 @@ import edu.ntnu.idatt2105.sojohans.backend.model.Equation;
 @Service
 public class EquationSolver {
     
-    public static void solveEquation(Equation equation){
+    public static void solveEquation(Equation equation, String username){
         String eqString = equation.getEquation();
         String[] split = eqString.split("(?<=\\d)(?=[+\\-x÷])|(?<=[+\\-x÷])(?=\\d)");
         double result = Double.parseDouble(split[0]);

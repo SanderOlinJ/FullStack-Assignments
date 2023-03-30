@@ -7,8 +7,8 @@ const restAPICalc = axios.create({
     }
 })
 
-export const postEquation = (equation) => {
-    return restAPICalc.post("/calculate", equation)
+export const postEquation = (request) => {
+    return restAPICalc.post("/calculate/" + request.username, request.equation)
 }
 
 export const postUser = (user) => {
