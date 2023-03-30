@@ -1,6 +1,6 @@
 <template>
     <div class="form-container">
-        <label class="error">{{ error }}</label>
+        <label class="error">{{ errorMsg }}</label>
         <div class="username">
             <h3>Username</h3>
             <input v-model="username" />
@@ -17,11 +17,13 @@
 <script setup>
 import { ref, defineProps } from 'vue'
 import router from '@/router';
+import { useUserStore } from '@/store';
 import { postUser, postLogin } from '@/utils/restapi';
 
 const username = ref('')
 const password = ref('')
-const error = ref('')
+const errorMsg = ref('')
+const userStore = useUserStore()
 
 const props = defineProps({
     isLogin: {
@@ -41,10 +43,13 @@ async function login() {
                 console.log('Logged in')
                 console.log(response.data)
                 router.push('/calculator')
+                userStore.login(user)
             }
         }
     ).catch((error) => {
-        console.log(error.response)
+      if (error.response.status === 409){
+        errorMsg.value = error.response.data
+      }
     })
 }
 
@@ -63,7 +68,7 @@ async function signup() {
         }
     ).catch((error) => {
         if (error.response.status === 409){
-            console.log('User already registered')
+          errorMsg.value = error.response.data
         }
     })
 }

@@ -9,8 +9,10 @@
 <script setup>
 import Calculator from '../components/Calculator.vue';
 import CalculatorHistory from '../components/CalculatorHistory.vue';
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useUserStore } from '@/store';
     
+const userStore = useUserStore()
 const equationsArray =  ref([])
 
 function addEquationToArray(equation) {
@@ -20,6 +22,10 @@ function addEquationToArray(equation) {
 function resetArray() {
     equationsArray.value = [];
 }
+
+onMounted(() => {
+  console.log(userStore.username)
+})
 
 </script>
 

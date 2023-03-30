@@ -1,18 +1,52 @@
 <template>
-    <nav class="navbar">
-        <div class="navbar__container">
-        <div class="navbar-icons">
-            <router-link to="/" class="icon-link" exact-active-class="active">
-            <h1>Log in</h1>
-            </router-link>
+  <nav class="navbar">
+    <div class="navbar__container">
+      <div v-if="showLogin" class="navbar-icons">
+        <router-link to="/" class="icon-link" exact-active-class="active">
+          <h1>Log in</h1>
+        </router-link>
 
-            <router-link to="/signup" class="icon-link" exact-active-class="active">
-            <h1>Sign up</h1>
-            </router-link>
+        <router-link to="/signup" class="icon-link" exact-active-class="active">
+          <h1>Sign up</h1>
+        </router-link>
+      </div>
+      <div v-if="!showLogin" class="navbar-icons" id="log-out">
+        <div @click="logOut" class="icon-link" exact-active-class="active">
+          <h1>Log out</h1>
         </div>
-        </div>
-    </nav>
+      </div>
+    </div>
+  </nav>
 </template>
+
+<script setup>
+import { watch, ref, onMounted } from 'vue';
+import { useUserStore } from '@/store';
+import router from '@/router';
+
+const showLogin = ref(true)
+
+const userStore = useUserStore()
+
+watch(() => userStore.loggedIn, (newValue) => {
+  if (newValue === true){
+    showLogin.value = false
+  }
+})
+
+async function logOut() {
+  showLogin.value = true
+  await userStore.logOut()
+  router.push('/')
+}
+
+onMounted(() => {
+  if (userStore.loggedIn === true){
+    showLogin.value = false
+  }
+})
+  
+</script>
 
 
 <style scoped>
@@ -46,6 +80,10 @@
     justify-content: space-between;
     align-items: center;
     padding: 0;
+}
+
+#log-out{
+  justify-content: center;
 }
 
 
