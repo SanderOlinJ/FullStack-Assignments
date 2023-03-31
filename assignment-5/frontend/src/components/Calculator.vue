@@ -57,8 +57,8 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue'
-import { postEquation, postEquationWithUser } from '../utils/restapi'
 import { useUserStore } from '@/store';
+import axios from 'axios';
 
 const updatingValue = ref('OFF')
 const value = ref(0.0)
@@ -132,7 +132,18 @@ function symbolHandling(buttonValue) {
 }
 
 async function RestAPI(){
-  await postEquation(equation.value).then(
+  if (userStore.token === ''){
+    alert("You need to log in!")
+    return
+  }
+  let path = 'http://localhost:8088/api/calculate'
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization' : 'Bearer ' + userStore.token
+    }
+  }
+  await axios.post(path, equation.value, config).then(
     (response) => {
       const result = ref(response.data)
       const emitEq = ref('')
@@ -156,7 +167,8 @@ async function RestAPI(){
     equation: equation.value,
     solution: solution.value
   })
-  await postEquationWithUser(request.value)
+  path = 'http://localhost:8088/api/addEquation/' + userStore.username
+  await axios.post(path, request.value, config)
   clearAllButOutput()
 }
 

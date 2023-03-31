@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id @Column(name = "username") private String username;
-    @Column(name = "password") private String password;
+    @Column(name = "password") private byte[] password;
+    @Column(name = "salt") private byte[] salt;
 
 }

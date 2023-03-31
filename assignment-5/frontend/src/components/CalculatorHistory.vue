@@ -19,8 +19,8 @@
 
 <script setup>
 import { onMounted, ref, defineProps, watch } from 'vue';
-import { getEquationByUser, clearEquationsByUser } from '@/utils/restapi';
 import { useUserStore } from '@/store';
+import axios from 'axios';
 
 const userStore = useUserStore()
 const equationsHistory = ref([])
@@ -42,20 +42,34 @@ onMounted(() => {
   getHistory()
 })
 
-function getHistory() {
-  getEquationByUser(userStore.username).then(
+async function getHistory() {
+  const path = 'http://localhost:8088/api/getEquations/' + userStore.username
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization' : 'Bearer ' + userStore.token
+    }
+  }
+  await axios.get(path,userStore.username, config).then(
     (response) => {
       for (let i = 0; i < response.data.length; i++){
         equationsHistory.value.push(response.data[i].equation + " = " + response.data[i].solution)
       }
     }
-  ).catch((error) => {
-    alert(error)
+  ).catch(() => {
+    alert("You need to log in!")
   })
 }
 
-function resetHistory() {
-  clearEquationsByUser(userStore.username).then(
+async function resetHistory() {
+  const path = 'http://localhost:8088/api/clearEquations/' + userStore.username
+  const config = {
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization' : 'Bearer ' + userStore.token
+    }
+  }
+  await axios.post(path, userStore.username, config).then(
     () => {
       equationsHistory.value = []
     }

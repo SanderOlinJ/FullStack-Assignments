@@ -19,6 +19,7 @@ import { ref, defineProps } from 'vue'
 import router from '@/router';
 import { useUserStore } from '@/store';
 import { postUser, postLogin } from '@/utils/restapi';
+import sha256 from 'crypto-js/sha256'
 
 const username = ref('')
 const password = ref('')
@@ -35,42 +36,41 @@ const props = defineProps({
 async function login() {
     const user = {
         username: username.value,
-        password: password.value
+        password: sha256(password.value).toString()
     }
     await postLogin(user).then(
         (response) => {
             if (response.status === 200) {
-                console.log('Logged in')
-                console.log(response.data)
-                router.push('/calculator')
-                userStore.login(user)
+              userStore.login(response.data)
+              router.push('/calculator')
             }
         }
     ).catch((error) => {
       if (error.response.status === 409){
-        errorMsg.value = error.response.data
+        errorMsg.value = error.response.data.message
       }
     })
 }
 
 async function signup() {
-    const user = {
-        username: username.value,
-        password: password.value
+  
+  const user = {
+    username: username.value,
+    password: sha256(password.value).toString()
+  }
+
+  await postUser(user).then(
+    (response) => {
+      if (response.status === 200) {
+        console.log('User registered')
+        router.push('/')
+      }
     }
-    await postUser(user).then(
-        (response) => {
-            if (response.status === 200) {
-                console.log('User registered')
-                console.log(response.data)
-                router.push('/')
-            }
-        }
-    ).catch((error) => {
-        if (error.response.status === 409){
-          errorMsg.value = error.response.data
-        }
-    })
+  ).catch((error) => {
+      if (error.response.status === 409){
+        errorMsg.value = error.response.data
+      }
+  })
 }
 
 </script>
